@@ -16,8 +16,8 @@ int hours(int r1, int r2){
     r1 /= 100;
     r2 /= 100;
 
-    if(r2%100 > r1%100) m = (60 - r2%100) + r1%100;
-    m = r1%100 - r2%100;
+    // if(r2%100 > r1%100) m = (60 - r2%100) + r1%100;
+    // m = r1%100 - r2%100;
 
     r1 /= 100;
     r2 /= 100;
@@ -36,6 +36,22 @@ int military(int H, int M, int S, char n){
     if(n == 'b') H += 12;
     return H*10000 + M*100 + S;
     //function to return the time in military system
+}
+
+bool invalidHour(int h1, int h2){
+    if((h1 < 0 || h1 > 12) || (h2 < 0 || h2 > 12)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool invalidMinSec(int n1, int n2){
+    if((n1 < 0 || n1 > 59) || (n2 < 0 || n2 > 59)){
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int main(){
@@ -76,11 +92,16 @@ int main(){
    cout << "seconds: ";
    cin >> Sdep;
    cout << endl;
+
+   if(mod1 != 'a' || mod2 != 'b'){
+    cout << "Invalid moment of the day" << endl;
+    return -1;
+   }
     
-    // if(((((mod1 || mod2) > 2 || (mod1 || mod2) < 1) || ((Harr || Hdep) > 12) || ((Harr || Hdep) < 1)) || (((Marr || Mdep) > 59)) || (((Marr || Mdep) < 1))) || (((Sarr || Sdep) > 59) || ((Sarr || Sdep) < 1 ))) {
-    //     cout <<  "Invalid time";
-    //     return -1;
-    // } 
+    if((invalidMinSec(Marr, Mdep) || invalidMinSec(Sarr, Sdep)) || invalidHour(Harr, Hdep)) {
+        cout <<  "Invalid time";
+        return -1;
+    } 
     //TODO → VALID TIME???
 
     if(military(Harr, Marr, Sarr, mod1) > military(Hdep, Mdep, Sdep, mod2)){
