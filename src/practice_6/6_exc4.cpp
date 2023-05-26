@@ -57,6 +57,10 @@ void printPeople(Persona array[]){
     }
 }
 
+bool isElegible(Persona p){
+    return p.edad > 18;
+} // function to know if the person is elegible to vote
+
 int main(){
 
     fstream inputFile;
@@ -72,7 +76,7 @@ int main(){
 
 
     if(inputFile.is_open()){
-        cout << "It's open";
+        cout << "It's open" << endl;
         int id;
         string name;
         int edad;
@@ -103,6 +107,29 @@ int main(){
 
     cout << "number of people: " << numberOfPeople << endl;
     printPeople(people);
+
+    
+    fstream outfile("Output.txt", ios::out); //writing a file 
+    
+        int id;
+        int age;
+        int i = 0;
+
+        while(true){
+            if(isElegible(people[i])){
+                id = people[i].cedula;
+                age = people[i].edad;
+
+                outfile << id << endl;
+                outfile << age << endl;
+            } //loop to print elegible people to vote
+
+            i++;
+            if(i > 9) break;
+        }
+    
+    outfile.close(); //closing the file we just opened
+
 
     return 0;
 }
