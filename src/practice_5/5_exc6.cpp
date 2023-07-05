@@ -24,7 +24,7 @@ void twister(int array[], int N, int c){
         while(j < c - 1){ 
             array[j] = array[j + 1];
             j++;
-        } //loop for displacing each element to the left
+        } //loop for placing each element to the left
         
         array[c - 1] = aux; //we'll place the stored element in auxiliar as the last element in the array
         N--; //decreasing the number of twists
