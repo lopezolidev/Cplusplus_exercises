@@ -18,23 +18,38 @@ void printFun(int arr[], int count){
     cout << " ]";
 }//printing function
 
-void sum(int arr[], int count, int sum){
-    int j = 0, c = 1;
-    while(j < count){
-        int i = 0;
-        while((i+c) < 6){
-            if((arr[j] + arr[i+c]) == sum){
-                cout << "true";
-                break;
+bool sum(int arr[], int count, int sum){
+    int j = 0, c = 1; 
+    //j → iterator variable, c → counter of total sums of the array
+    
+    bool b = false;  
+    // b → the returning value
+    
+    while(j < count){  // j will be compared to the number of elements in the array to repeat the big while loop
+        int i = 0;   
+        // initializing the inner iterator variable from the minor loop
+        
+        while((i+c) < 6){   
+            // the sum of the iterator with the counter of total sums result in not repeating the total operations from the start of the loop, therefore a gain in use of resources
+            
+            if((arr[j] + arr[i+c]) == sum){  
+            // comparison for the sum between the actual number in the array "arr[j]" and the next number "arr[i+c]" to the given value of the sum
+            
+                b = true;
+                return b; 
+                //once we know the sum is true, the function returns the boolean value
             } else {
-                cout << false;
+                b = false; // if not this value will keep being false but no returned yet
             }
             i++;
         }
         j++;
         c++;
+
+        //increasing iterator and counter for every turn
     }
-}
+    return b; //returning the boolean value, for this case will be false
+} // algorithm to return a boolean value determining if two values from the array summed result in a given number
 
 int main(){
     int arr[10];
@@ -66,7 +81,11 @@ int main(){
 
     cout << "The statement: " << endl;
     cout << "The array A contains 2 values which sum is equal to " << k << " is ";
-    sum(arr, counter, k); 
+    if(sum(arr, counter, k)){
+        cout << "TRUE";
+    } else {
+        cout << "FALSE";
+    }
     
     return 0;
 }
