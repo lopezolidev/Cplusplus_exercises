@@ -45,7 +45,7 @@ void flip(int matA[][3], int matB[][3], int rows, int cols){
         }
         i++;
     }
-}
+} //trasposing matrix function
 
 int main(){
     int N = 3;
