@@ -248,6 +248,23 @@ void totalMF(int& males, int& females, Disease array[]){
     }
 } // total males and females counter passing parameters as reference
 
+void percentByGend(Disease array[], int totalM, int totalF){
+    int totalPerM = 0;
+    int totalPerF = 0;
+    int i = 0;
+    while(i < 10){
+        cout << "Percentage of " << array[i].disease_name << " in males " << (array[i].countM * 100)/totalM << "%" << endl;
+        totalPerM += (array[i].countM * 100)/totalM;
+
+        cout << "Percentage of " << array[i].disease_name << " in females " << (array[i].countF * 100)/totalF << "%" << endl;
+        totalPerF += (array[i].countF * 100)/totalF;
+        i++;
+    }
+
+    cout << "Total male population: " << totalPerM << "%" << endl;
+    cout << "Total female population: " << totalPerF << "%" << endl;
+}
+
 int main(){
     
     Patient patients[20]; // creating patients array
@@ -280,7 +297,8 @@ int main(){
     cout << "total males: " << totalM << endl;
     cout << "total females: " << totalF << endl;
 
-    /* TODO: Finish 2nd task */
+    /* SECOND TASK COMPLETED */
+    percentByGend(diseases, totalM, totalF);
 
     return 0;
 }
