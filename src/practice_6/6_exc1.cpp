@@ -1,17 +1,18 @@
 /*
     1. There're different kind of products in a store. Each product contains a code, description, a name and price. There're different types of products. Each type has a name, a code and 10 products.
 
-    a) Define the data structures to store a product, and then store the type of product.
+    a) Define the data structures to store a product, and then store the type of product.  ----- DONE
 
-    b) Let's suppose we have an array with 5 types of products and we wish to increase the 10% of the price of all products of a specific type with code C
+    b) Let's suppose we have an array with 5 types of products and we wish to increase the 10% of the price of all products of a specific type with code C ----- DONE
 
-    c) Write a function that given a code of product P, browse the product in the whole data structure and return true y the product exists or false in the opposite case
+    c) Write a function that given a code of product P, browse the product in the whole data structure and return true if the product exists or false in the opposite case
 */
 
 //TODO: FINISH CREATE PRODUCTS FUNCTIONS
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ struct Types {
     string name;
     char code;
     Products storage[10];
-    int counter;
+    int counter = 10;
 }; //data structure of product type
 
 
@@ -46,14 +47,19 @@ string typeName(){
     return name;
 }
 
+int typeCounter(){
+    int counter;
+
+    cin >> counter;
+
+    return counter;
+}
+
 string typeDescription(){
     string description;
 
-    cout << "Insert description: ";
-
     cin >> description; 
-    cout << endl;
-
+    
     return description;
 }
 
@@ -66,197 +72,178 @@ float typePrice(){
     return price;
 }
 
+void fillProducts(Products arr[], int sizeP, string file){
 
+    string name;
+    string description;
+    float price;
+    char code;
 
-void createProduct(Products array[], int& count, char op){
-    // char op;
+    fstream inputFile;
+
+    inputFile.open(file, ios::in);
+
+    int j = 0;
+
+    if(inputFile.is_open()){
+            while(j < 10){
+            
+            inputFile >> name;
+            arr[j].name = name;
+
+            inputFile >> description;
+            arr[j].description = description;
+            
+            inputFile >> price;
+            arr[j].price = price;
+
+            inputFile >> code;
+            arr[j].code = code;
+
+            j++;
+        }   
+    }
+    inputFile.close();
+}
+
+void fillTypes(Types arrT[], int sizeT, int sizeP){
     int i = 0;
-do {
- 
-    if(op == 'y' || op == 'Y'){ 
-        Products p;
 
-        cout << "Insert product code: ";
-        p.code = typeCode();
-        cout << "p.code: " << p.code << endl;
+    string name;
+    char code;
+    int counter;
 
+    fstream inputFile;
+    
+    inputFile.open("types.txt", ios::in);
 
-        cout << "Insert product name: ";
-        p.name = typeName();
-        cout << "p.name: " << p.name << endl;
+    string files[] = {"productsA.txt", "productsB.txt", "productsC.txt", "productsD.txt", "productsE.txt"};
 
-        p.description = typeDescription();
-        cout << "p.description: " << p.description << endl;
+    if(inputFile.is_open()){
+        while(i < sizeT){
 
-        p.price = typePrice();
-        cout << "p.price: " << p.price << endl;
+        inputFile >> name;
+        arrT[i].name = name;
 
-        // if(tCode == c){
-            if(count <= 9){    
-                array[count] = p;
-                count++;
-                i++;
-                cout << "count " << count << endl;
-            } else {
-                cout << "Products array is full!" << endl;
-                return; 
-            }
-    } else if( op == 'n'){
-        cout << "Thanks! " << endl;
-        return;
-    } else {
-        cout << "ERROR: Invalid option. Must be yes (y) or no (n)";
+        inputFile >> code;
+        arrT[i].code = code;
+
+        fillProducts(arrT[i].storage, sizeP, files[i]); //sending the empty array of products in this function, this function will call the other methods to fill the attributes of each product
+
+        i++;
+        }
     }
+    inputFile.close();
 
-    cout << "Do you wish to create a new product? (y / n)" << endl;
-    cin >> op;
+    
+} // filling the array of types of products
 
-} while((op != 'y' || op != 'n') || (i <= 9));     
-}
-
-void createType(Types array[]){
-int i = 0;
-char o;
-
-while(i < 5){
-cout << "Do you wish to create a new Type of product? (y / n)" << endl;
-// cout << "Press (f) to finish the program" << endl;
-
-    cin >> o;
-    cout << endl;
-
-    if(o == 'y' || o == 'Y'){
-        Types t;
-
-        cout << "Insert name of product type: ";
-        t.name = typeName();
-        cout << endl;
-        
-        cout << "Insert type of product code: ";
-        t.code = typeCode();
-        cout << endl;
-
-        t.counter = 0;
-
-        array[i] = t;
-
-        cout << "The product type will have an array of 10 products, please insert the option for creating products (y / n)" << endl;   
-
-        char d;
-
-        do{
-            cin >> d;
-            cout << endl;
-
-            if(d == 'y' || d == 'Y'){
-                createProduct(t.storage, t.counter, d); //creating product by Type of product
-                cout << "t.counter: " << t.counter << endl; 
-            }   else if(d == 'n' || d == 'N' ){
-                cout << "Thanks!";
-                return;
-            }   else {
-                cout << "ERROR: invalid option. Only yes (y) or no (n)" << endl;
-            }
-
-            cout << "Do you wish to create a new product? (y / n) " << endl;
-        } while(d != 'y' || d != 'n');
-
-    i++; // increasing the number of elements in the array of Types of Products
-
-    } else if(o == 'n'){
-       cout << "Thanks! " << endl; 
-       return;
-    } else {
-        cout << "ERROR: invalid option. Only yes (y) or no (n)";
-    }
-}
-
-    cout << "ERROR: The types of products array is full! " << endl;
-
-}
-
-void createLoneProduct(Types arr[], char code){
+void printProducts(Products arr[], int size){
     int k = 0;
+    while(k < size){
+        cout << "Name of product: " << arr[k].name << endl;
+        cout << "Description of product: " << arr[k].description << endl;
+        cout << "Price of product: " << arr[k].price << endl;
+        cout << "Code of product: " << arr[k].code << endl;
 
-    while(k < 5){
-        if(arr[k].code == code){
-            createProduct(arr[k].storage, arr[k].counter, 'y'); //now a new product will be created using code criteria and the rest of the Types of products parameters
-        }
         k++;
-    } 
-    cout << "No Type of Product match with give product code." << endl;
-    cout << "Cannot create a new product without a Type of product" << endl;    
+    }
+    cout << endl;
 }
 
-void menu(Types array[]){
-    char op;
+void printTypes(Types arr[], int size){
+    int i = 0;
+    while(i < size){
+        cout << "Name of type: " << arr[i].name << endl;
+        cout << "Code of type: " << arr[i].code << endl;
+        cout << "Ammount of products in type: " << arr[i].counter << " units"<< endl << endl;
 
-    cout << "Welcome to Store.inc! please select any of the options below: " << endl;
+        printProducts(arr[i].storage, 10);
 
-    do {
-        cout << "1- Create a type of product" << endl;
-        cout << "2- Create a product" << endl;
-        cout << "3- finish the program" << endl;
+        i++;
+    }
 
-        cin >> op;
-        cout << endl;
+}
 
-        if(op == '1'){
-            createType(array);
-        }else if(op == '2'){
-            char dd;
-            cout << "Insert Type of product code: ";
-            cin >> dd;
+int countC(Products arr[], int sizeP){
+    int j = 0;
 
-            cout << endl;
+    int c = 0;
 
-            createLoneProduct(array, dd);
-        } else if(op == '3'){
-            cout << "See you!" << endl << endl;
-            return;
-        }else {
-            cout << "ERROR: invalid option. The options are 1 or 2" << endl;
+    while(j < sizeP){
+        if(arr[j].code == 'C' || arr[j].code == 'c') c++;
+
+        j++;
+    }
+
+    return c;
+} // counting how many C type products exist in each category
+
+void printCProduct(Products arr[], int sizeP){
+    int i = 0;
+    while(i < sizeP){
+        if(arr[i].code == 'C' || arr[i].code == 'c'){
+            cout << "Product name: " << arr[i].name << endl;
+            cout << "Product price: " <<  arr[i].price << endl << endl;
         }
-    } while((op != '1' || op != '2') || op != '3');
+
+        i++;
+    }
+
+} // function to print only products which code is == C or c
+
+void printC(Types arr[], int sizeT, int sizeP){
+    int i = 0;
+    while(i < sizeT){
+        cout << "Type of product: " << arr[i].name << endl;
+        cout << "Number of C-code products in this type: " << countC(arr[i].storage, sizeP) << endl; 
+        printCProduct(arr[i].storage, sizeP);
+
+        i++;
+    }
 
 }
 
-void display(Types array[]){
+void increaseProductC(Types types[], int sizeT, int sizeP){
     int i = 0;
 
-    cout << "Types: " << endl;
+    while(i < sizeT){
 
-    while(i < 1){
-
-        cout << "Type of product name: " << array[i].name << endl;
-        cout << "Type of product code: " << array[i].code << endl;
-        cout << "Type of product counter: " << (int) array[i].counter << endl;
-        
-        cout << "==========================================================" << endl;
         int j = 0;
-        while(j < 1){
-            string productName = array[i].storage[j].name;
-            string productDescription = array[i].storage[j].description;
-            char productCode = array[i].storage[j].code;
-            float productPrice =  array[i].storage[j].price;
+        while(j < sizeP){
+            if(types[i].storage[j].code == 'C' || types[i].storage[j].code == 'c'){
+                float p = 0.0;
+               
+                p = types[i].storage[j].price;
+              
+                p = (10 * p) / 100;
+              
+                types[i].storage[j].price = p + types[i].storage[j].price;
+                // increasing 10% to the original price to products of code C   
+            }
 
-            cout << "Product name: " << productName << endl;
-            cout << "Product description: " << productDescription<< endl;
-            cout << "Product code: " << productCode << endl;
-            cout << "Product price: " << productPrice << " $" << endl;
 
             j++;
         }
-        cout << "==========================================================" << endl;
+
         i++;
     }
+
+
 }
 
 int main(){
     Types store[5];
 
-    menu(store);
-    display(store);
+
+    fillTypes(store, 5, 10);
+    //printTypes(store, 5);
+
+    printC(store, 5, 10);
+
+    increaseProductC(store, 5, 10);
+
+    printC(store, 5, 10);
 
     return 0;
 }

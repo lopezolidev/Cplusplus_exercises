@@ -1,0 +1,10 @@
+Clothing
+A
+Electronics
+B
+Accessories
+C
+Bags
+D
+Home_decor
+E
