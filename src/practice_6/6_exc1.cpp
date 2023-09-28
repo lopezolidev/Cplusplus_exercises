@@ -17,7 +17,7 @@
 using namespace std;
 
 struct Products {
-    char code;
+    string code;
     float price;
     string name;
     string description;
@@ -66,7 +66,6 @@ string typeDescription(){
 float typePrice(){
     float price;
 
-    cout << "Insert product price: ";
     cin >> price;
 
     return price;
@@ -77,7 +76,7 @@ void fillProducts(Products arr[], int sizeP, string file){
     string name;
     string description;
     float price;
-    char code;
+    string code;
 
     fstream inputFile;
 
@@ -171,7 +170,7 @@ int countC(Products arr[], int sizeP){
     int c = 0;
 
     while(j < sizeP){
-        if(arr[j].code == 'C' || arr[j].code == 'c') c++;
+        if(arr[j].code == "Cc" || arr[j].code == "cc") c++;
 
         j++;
     }
@@ -182,7 +181,7 @@ int countC(Products arr[], int sizeP){
 void printCProduct(Products arr[], int sizeP){
     int i = 0;
     while(i < sizeP){
-        if(arr[i].code == 'C' || arr[i].code == 'c'){
+        if(arr[i].code == "Cc" || arr[i].code == "cc"){
             cout << "Product name: " << arr[i].name << endl;
             cout << "Product price: " <<  arr[i].price << endl << endl;
         }
@@ -211,7 +210,7 @@ void increaseProductC(Types types[], int sizeT, int sizeP){
 
         int j = 0;
         while(j < sizeP){
-            if(types[i].storage[j].code == 'C' || types[i].storage[j].code == 'c'){
+            if(types[i].storage[j].code == "Cc" || types[i].storage[j].code == "cc"){
                 float p = 0.0;
                
                 p = types[i].storage[j].price;
@@ -232,6 +231,29 @@ void increaseProductC(Types types[], int sizeT, int sizeP){
 
 }
 
+bool findProduct(Types types[], string code, int sizeT, int sizeP){
+    int i = 0;
+
+    bool b = false;
+
+    while(i < sizeT){
+
+        int j = 0;
+        while(j < sizeP){
+            if(types[i].storage[j].code == code){
+                b = true;
+                break;
+            } 
+
+            j++;
+        }
+
+        i++;
+    }
+
+    return b;
+} // returns True if any product code matches with the code given
+
 int main(){
     Types store[5];
 
@@ -244,6 +266,18 @@ int main(){
     increaseProductC(store, 5, 10);
 
     printC(store, 5, 10);
+
+    string code = "";
+
+    cout << "Insert product code: " << endl;
+    cin >> code;
+    
+    if(findProduct(store, code, 5, 10)){
+        cout << "True" << endl;
+    } 
+    else{
+        cout << "False";
+    } 
 
     return 0;
 }
