@@ -1,23 +1,4 @@
 /*
-Cuando se visita una ferretería, es común hallar todo tipo de materiales y
-herramientas. Todas las herramientas poseen un conjunto de características
-comunes, que son de interés no solo para el dueño del negocio sino también
-para los clientes como por ejemplo: el nombre, una pequeña descripción, el
-costo, algún código de fábrica asociado, el nombre del fabricante, etc. En
-algunas ferreterías, las herramientas las clasifican en tres grandes grupos,
-manuales, eléctricas y motoras. Dependiendo del uso futuro por parte
-de los clientes, dichos tipos de herramientas se clasifican a su vez en: de
-albañilería, de plomería, o de electricidad. Las herramientas eléctricas tienen
-como característica principal el voltaje con el cual trabajan, incluso existen
-herramientas eléctricas que no solo trabajan con la corriente proveniente del
-tendido eléctrico sino que pueden operar en base a la energía almacenada en
-baterías. Las herramientas motoras funcionan a base de un motor que posee
-cierta potencia, poseen además un pequeño tanque para el combustible y
-hay algunas que hasta necesita aceite. Con la avanzada tecnología actual, se
-han desarrollado herramientas que pueden trabajar a base de electricidad
-y a base de energía motora. Y ya se encuentran disponibles en mucha
-ferretería a pesar de su elevado costo.
-
 When visiting a hardware store, it is common to find all kinds of materials and tools. All tools have a set of common features that are of interest not only to the business owner but also to customers, such as the name, a brief description, cost, an associated factory code, the manufacturer's name, etc. In some hardware stores, tools are classified into three main groups: manual, electric, and motorized. Depending on the future use by customers, these types of tools are further classified into masonry, plumbing, or electrical tools. Electric tools have as their main characteristic the voltage they operate with. There are even electric tools that not only work with the current from the electrical grid but can also operate based on energy stored in batteries. Motorized tools function based on an engine with a certain power, and they also have a small fuel tank, with some even requiring oil. With today's advanced technology, tools have been developed that can operate using both electricity and motor power. These tools are already available in many hardware stores, despite their high cost.
 */
 
@@ -26,10 +7,16 @@ When visiting a hardware store, it is common to find all kinds of materials and 
 
 using namespace std;
 
-enum Types {
+enum General_Type {
     manual,
     electric,
     motorized
+};
+enum Customer_Type {
+    plumbing,
+    masonry,
+    electric_motorized,
+    fueled
 };
 
 
@@ -79,7 +66,7 @@ class Tool {
             cout << "Tool's name: " << get_name() << endl;
             cout << "Description: " << get_description() << endl;
             cout << "Manufacturer's name: " << get_manu_name() << endl;
-            cout << "Cost: " << get_cost() << endl;
+            cout << "Cost: " << get_cost() << "$" << endl;
             cout << "Factory code: " << get_factory_code() << endl;
         }
 };
@@ -88,7 +75,7 @@ class Electric : public Tool {
     private: 
         int voltage;
         bool batteries;
-        Types type = electric;      // sending the enum -> type electric as the type of this tool
+        General_Type gentype = electric;      // sending the enum -> type electric as the type of this tool
 
     public:
         void set_voltage(int v){
@@ -103,11 +90,10 @@ class Electric : public Tool {
         bool requires_batteries(){
             return this->batteries;
         }
-        Types get_type(){
-            return this->type;
+        string get_type(){
+            return "electric";       
         }
-        void get_total_info(){
-            get_info();
+        void get_electric_info(){
             cout << "Type: " << get_type() << endl;
             cout << "Voltage: " << get_voltage() << endl;
             cout << "Requires Batteries: ";
@@ -120,8 +106,202 @@ class Electric : public Tool {
         }
 };
 
-int main(){
+class Manual : public Tool {
+    private:
+        General_Type gentype = manual;
+    
+    public: 
+        string get_type(){
+            return "manual";
+        }
+        void get_manual_info(){
+            cout << "General type: " << get_type() << endl;             
+        }
+};
 
+class Motorized : public Tool {
+    private:
+        float engine_power;
+        bool fuel_tank;
+        General_Type gentype = motorized;
+
+    public:
+        void set_engine_power(float ep){
+            this->engine_power = ep;
+        }
+        void set_fuel_tank(bool ft){
+            this->fuel_tank = ft;
+        }
+        float get_engine_power(){
+            return this->engine_power;
+        }
+        bool get_fuel_tank(){
+            return this->fuel_tank;
+        }
+        string get_gentype(){
+            return "motorized";
+        }
+        void get_motorized_info(){
+            cout << "Engine's power: " << get_engine_power() << endl;
+            cout << "Requires fuel tank: ";
+                if(get_fuel_tank()){
+                    cout << "Yes";  
+                } else {
+                    cout << "No";
+                } 
+                cout << endl;
+            cout << "General type: " << get_gentype() << endl;
+        }
+};
+
+class Fueled : public Motorized{
+    private:
+        Customer_Type custype = fueled;
+        bool requires_oil = false;
+    
+    public: 
+        string get_custype(){
+            return "fueled";
+        }
+        void get_tool_info(){
+            get_info();
+            get_motorized_info();
+            cout << "Customer type: " << get_custype()  << endl;
+        }
+};
+
+class Masonry : public Manual {
+    private:
+        Customer_Type custype = masonry;
+
+    public:
+        string get_custype(){
+            return "masonry";
+        }
+        void get_masonry_info(){
+            get_manual_info();
+            cout << "Custormer type: " << get_custype() << endl;
+        }
+};
+
+class Plumbing : public Electric, public Manual {
+    private:
+        Customer_Type custype = plumbing;
+    
+    public:
+        string get_custype(){
+            return "plumbing";
+        }
+        void get_tool_info(){
+            Manual::get_info();
+            get_electric_info();
+            get_manual_info();
+            cout << "Customer type: " << get_custype() << endl;
+        }
+
+};
+
+class Electric_Motorized : public Electric, public Motorized{
+    private:
+        Customer_Type custype = electric_motorized;
+    public:
+        string get_custype(){
+            return "electric-motorized" ;
+        }
+        void get_tool_info(){
+            Electric::get_info();
+            get_electric_info();
+            get_motorized_info();
+            cout << "Customer type: " << get_custype() << endl;
+        }
+};
+
+
+int main(){
+    Plumbing p1;
+    p1.Manual::set_name("Pipe Threader");
+    p1.Manual::set_description("A tool used for cutting threads into pipes to create fittings for plumbing connections");
+    p1.Manual::set_manufacturers_name("ABC Plumbing Tools Inc");
+    p1.Manual::set_cost(89.99);
+    p1.Manual::set_factory_code(12345);
+    p1.Electric::set_voltage(110);
+    p1.Electric::set_batteries(false);
+
+    p1.get_tool_info();
+
+    //applying the concept of mulitple inheritance
+
+    //missing tools ↓
+
+//     Drain Auger:
+
+// Description: A tool used for clearing clogs in plumbing pipes using a rotating cable.
+// Manufacturer's Name: XYZ Plumbing Supplies
+// Cost: $49.99
+// Factory Code: 67890
+// Voltage: 120
+// Requires Batteries: No
+// Masonry Tools:
+
+// Masonry Saw:
+
+// Description: A tool used for cutting through materials like bricks, stones, or concrete blocks.
+// Manufacturer's Name: XYZ Masonry Tools Ltd.
+// Cost: $199.99
+// Factory Code: 54321
+// General Type: Manual
+// Concrete Mixer:
+
+// Description: A tool used for efficiently mixing concrete, mortar, or other masonry materials.
+// Manufacturer's Name: ABC Construction Equipment
+// Cost: $299.99
+// Factory Code: 98765
+// General Type: Motorized
+// Engine Power: 2.5 hp
+// Requires Fuel Tank: Yes
+
+// Electric Motorized Tools:
+
+// Electric Lawn Mower:
+
+// Description: An electric motorized tool used for cutting grass in lawns.
+// Manufacturer's Name: GreenWorks
+// Cost: $299.99
+// Factory Code: 13579
+// Voltage: 120
+// Requires Batteries: No
+// Engine Power: 1.5 hp
+// Requires Fuel Tank: No
+// Electric Chainsaw:
+
+// Description: An electric motorized tool used for cutting wood and branches.
+// Manufacturer's Name: Black+Decker
+// Cost: $129.99
+// Factory Code: 24680
+// Voltage: 110
+// Requires Batteries: No
+// Engine Power: 2.0 hp
+// Requires Fuel Tank: No
+// Fueled Tools:
+
+// Gasoline Generator:
+
+// Description: A fueled tool used to generate electricity in remote locations or during power outages.
+// Manufacturer's Name: Honda Power Equipment
+// Cost: $999.99
+// Factory Code: 97531
+// General Type: Motorized
+// Engine Power: 5.5 kW
+// Requires Fuel Tank: Yes
+// Gasoline-Powered Pressure Washer:
+
+// Description: A fueled tool used for cleaning surfaces with high-pressure water.
+// Manufacturer's Name: Briggs & Stratton
+// Cost: $349.99
+// Factory Code: 86420
+// General Type: Motorized
+// Engine Power: 2.3 hp
+// Requires Fuel Tank: Yes
 
 
     return 0;
